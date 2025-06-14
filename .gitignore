@@ -23,8 +23,5 @@
 # Docker
 *.pid
 
-# Alloy config and data (if needed)
-/config/alloy/
-
 # Env files
 .env
