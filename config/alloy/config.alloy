@@ -89,13 +89,8 @@ otelcol.receiver.otlp "default" {
   http { }
 
   output {
-    // metrics = [otelcol.processor.resourcedetection.default.input]
-    metrics = [
-      // otelcol.processor.batch.default.input,
-    ]
-    logs    = [
-      // otelcol.processor.resourcedetection.default.input
-    ]
+    metrics = [otelcol.processor.resourcedetection.default.input]
+    logs    = [otelcol.processor.resourcedetection.default.input]
     traces  = [
 
       // The next line generates service graph and span metrics from Alloy. By default these are
@@ -119,32 +114,32 @@ otelcol.receiver.otlp "default" {
   }
 }
 
-// otelcol.processor.resourcedetection "default" {
-//   // https://grafana.com/docs/agent/latest/flow/reference/components/otelcol.processor.resourcedetection/
-//   detectors = ["env", "system"] // add "gcp", "ec2", "ecs", "elastic_beanstalk", "eks", "lambda", "azure", "aks", "consul", "heroku"  if you want to use cloud resource detection
+otelcol.processor.resourcedetection "default" {
+  // https://grafana.com/docs/agent/latest/flow/reference/components/otelcol.processor.resourcedetection/
+  detectors = ["env", "system"] // add "gcp", "ec2", "ecs", "elastic_beanstalk", "eks", "lambda", "azure", "aks", "consul", "heroku"  if you want to use cloud resource detection
 
-//   system {
-//     hostname_sources = ["os"]
-//   }
+  system {
+    hostname_sources = ["os"]
+  }
 
-//   output {
-//     metrics = [otelcol.processor.transform.add_resource_attributes_as_metric_attributes.input]
-//     logs    = [otelcol.processor.batch.default.input]
-//     traces  = [
-//       otelcol.processor.batch.default.input,
-//       // otelcol.connector.host_info.default.input,
-//     ]
-//   }
-// }
+  output {
+    metrics = [otelcol.processor.transform.add_resource_attributes_as_metric_attributes.input]
+    logs    = [otelcol.processor.batch.default.input]
+    traces  = [
+      otelcol.processor.batch.default.input,
+      // otelcol.connector.host_info.default.input,
+    ]
+  }
+}
 
-// otelcol.connector.host_info "default" {
-//   // https://grafana.com/docs/agent/latest/flow/reference/components/otelcol.connector.host_info/
-//   host_identifiers = ["host.name"]
+otelcol.connector.host_info "default" {
+  // https://grafana.com/docs/agent/latest/flow/reference/components/otelcol.connector.host_info/
+  host_identifiers = ["host.name"]
 
-//   output {
-//     metrics = [otelcol.processor.batch.default.input]
-//   }
-// }
+  output {
+    metrics = [otelcol.processor.batch.default.input]
+  }
+}
 
 // This processor strips out all resource attributes except for the service.name attribute. This is required because
 // otherwise the span metrics connector will attempt to generate separate metrics on a per-resource basis, rather than
@@ -268,23 +263,23 @@ otelcol.connector.servicegraph "tracemetrics" {
 //     }
 // }
 
-// otelcol.processor.transform "add_resource_attributes_as_metric_attributes" {
-//   // https://grafana.com/docs/agent/latest/flow/reference/components/otelcol.processor.transform/
-//   error_mode = "ignore"
+otelcol.processor.transform "add_resource_attributes_as_metric_attributes" {
+  // https://grafana.com/docs/agent/latest/flow/reference/components/otelcol.processor.transform/
+  error_mode = "ignore"
 
-//   metric_statements {
-//     context    = "datapoint"
-//     statements = [
-//       "set(attributes[\"deployment.environment\"], resource.attributes[\"deployment.environment\"])",
-//       "set(attributes[\"service.version\"], resource.attributes[\"service.version\"])",
-//       "set(attributes[\"service.name\"], resource.attributes[\"service.name\"])",
-//     ]
-//   }
+  metric_statements {
+    context    = "datapoint"
+    statements = [
+      "set(attributes[\"deployment.environment\"], resource.attributes[\"deployment.environment\"])",
+      "set(attributes[\"service.version\"], resource.attributes[\"service.version\"])",
+      "set(attributes[\"service.name\"], resource.attributes[\"service.name\"])",
+    ]
+  }
 
-//   output {
-//     metrics = [otelcol.processor.batch.default.input]
-//   }
-// }
+  output {
+    metrics = [otelcol.processor.batch.default.input]
+  }
+}
 
 otelcol.processor.batch "default" {
   // https://grafana.com/docs/agent/latest/flow/reference/components/otelcol.processor.batch/

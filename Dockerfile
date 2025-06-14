@@ -9,6 +9,7 @@ RUN mvn clean package -DskipTests
 FROM eclipse-temurin:17-jre-alpine
 WORKDIR /app
 COPY --from=build /app/target/hello-springboot-0.0.1-SNAPSHOT.jar app.jar
+COPY grafana-opentelemetry-java.jar grafana-opentelemetry-java.jar
 EXPOSE 8080
 
 ENV OTEL_TRACES_EXPORTER=otlp
@@ -20,4 +21,4 @@ ENV OTEL_SERVICE_NAME="springboot-sample-app"
 ENV OTEL_EXPORTER_OTLP_ENDPOINT=http://springboot-alloy:4317
 ENV OTEL_EXPORTER_OTLP_PROTOCOL=grpc
 
-ENTRYPOINT ["java", "-jar", "app.jar"]
+ENTRYPOINT ["java", "-javaagent:/app/grafana-opentelemetry-java.jar", "-jar", "app.jar"]
