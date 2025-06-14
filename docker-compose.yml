@@ -1,0 +1,32 @@
+services:
+  app:
+    build: .
+    container_name: springboot-app
+    image: hello-springboot:latest
+    ports:
+      - "8080:8080"
+    restart: unless-stopped
+    environment:
+      - PORT=8080
+      - OTEL_EXPORTER_OTLP_ENDPOINT=http://springboot-alloy:4317
+    depends_on:
+      - alloy
+
+  alloy:
+    container_name: springboot-alloy
+    # image: grafana/alloy:v1.8.1
+    image: grafana/alloy:latest
+    volumes:
+      - ./config/alloy:/etc/alloy
+    command:
+      - run
+      - /etc/alloy/config.alloy
+      - --storage.path=/var/lib/alloy/data
+      - --server.http.listen-addr=0.0.0.0:12345
+      - --stability.level=experimental # Enable all functionality
+    env_file:
+      - .env
+    ports:
+      - "12345:12345"
+      - "4317:4317"
+      - "4318:4318"
