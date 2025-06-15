@@ -1,14 +1,13 @@
-# Use an official Maven image to build the app
-FROM maven:3.9.6-eclipse-temurin-17 AS build
+# Use an official Gradle image to build the app
+FROM gradle:8.7-jdk17 AS build
 WORKDIR /app
-COPY pom.xml .
-COPY src ./src
-RUN mvn clean package -DskipTests
+COPY . .
+RUN gradle clean bootJar --no-daemon
 
 # Use a smaller JRE image for running the app
 FROM eclipse-temurin:17-jre-alpine
 WORKDIR /app
-COPY --from=build /app/target/hello-springboot-0.0.1-SNAPSHOT.jar app.jar
+COPY --from=build /app/build/libs/hello-springboot-0.0.1-SNAPSHOT.jar app.jar
 COPY grafana-opentelemetry-java.jar grafana-opentelemetry-java.jar
 EXPOSE 8080
 

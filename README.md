@@ -4,11 +4,11 @@ This is a simple "Hello, World!" application built with Spring Boot.
 
 ## How to Run
 
-1. Make sure you have Java 17+ and Maven installed.
+1. Make sure you have Java 17+ and Gradle installed (or use the included Gradle wrapper).
 2. Run the application with:
 
 ```bash
-mvn spring-boot:run
+./gradlew bootRun
 ```
 
 3. Open your browser and go to [http://localhost:8080](http://localhost:8080) to see the "Hello, World!" message.
@@ -39,8 +39,7 @@ docker compose down --remove-orphans; clear; docker compose up -d --build
 
 3. Open your browser and go to [http://localhost:8080](http://localhost:8080) to see the "Hello, World!" message.
 
-4. 
-Create load by running the included ./load.sh script:
+4. Create load by running the included ./load.sh script:
 
 ```bash
 ./load.sh
