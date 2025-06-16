@@ -99,6 +99,10 @@ otelcol.receiver.otlp "default" {
       // See also https://grafana.com/docs/grafana-cloud/monitor-applications/application-observability/instrument/metrics-labels/
       otelcol.processor.transform.spanmetrics.input,
 
+      // The following is used for head sampling traces
+      // https://grafana.com/docs/alloy/latest/reference/components/otelcol/otelcol.processor.probabilistic_sampler/
+      otelcol.processor.probabilistic_sampler.default.input,
+
       // The following would be used for tail sampling only traces containing errors.
       // Uncomment the following line, then comment out the line below it (the batch processor) to use
       // tail sampling.
@@ -111,6 +115,15 @@ otelcol.receiver.otlp "default" {
       otelcol.processor.batch.default.input,
 
     ]
+  }
+}
+
+// Probabilistic sampler for traces
+otelcol.processor.probabilistic_sampler "default" {
+  // https://grafana.com/docs/agent/latest/flow/reference/components/otelcol.processor.sampling/
+  sampling_percentage = 15
+  output {
+    traces = [otelcol.processor.batch.default.input]
   }
 }
 
