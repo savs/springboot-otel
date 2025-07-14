@@ -6,6 +6,9 @@
 *.iml
 .idea/
 
+# Gradle
+.gradle/
+
 # Eclipse
 .classpath
 .project
